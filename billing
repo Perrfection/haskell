@@ -1,0 +1,48 @@
+-- This code provides the invoice of paticular gobs acordding to the rules as follows:
+-- - You bill customers at a rate of $40/hour. 
+-- - You don't bill for tasks that are less than 10 minutes. But for any task that's 
+-- 10 minutes or more, any fraction of an hour counts as a whole hour. For example, 
+-- if a task takes 91 minutes, you bill $80 for two hours work.
+-- There are 3 diffrent exsiqution styles 
+
+-- exsiqution 1
+    job1 =  ("Ace Plumbing", [("Analysis", 91), ("Reporting", 150), ("Phone call", 7), ("Consultation", 40)])
+    companyName job = fst job
+    listOfTasks job = snd job
+    listOfMinutes job = map snd (snd job)
+    listOfBillableMinutes job = filter (>=10) $ listOfMinutes job
+    minutesToHours minutes = ceiling (minutes / 60)
+    listOfHours job = map minutesToHours $ listOfBillableMinutes job
+    sumOfHours job = foldl (+) 0 $ listOfHours job
+    invoiceAmount job = sumOfHours job * 40
+    printedInvoice job = "The charge to " ++ companyName job ++ " is $" ++ show (invoiceAmount job)     
+    
+    
+    
+-- exsiqution 2: where
+    printedInvoice' job = "The charge to " ++ companyName' job ++ " is $" ++ show (invoiceAmount' job) 
+        where companyName' job = fst job
+              invoiceAmount' job = sumOfHours' job * 40
+                where sumOfHours' job = foldl (+) 0 $ listOfHours' job
+                        where listOfHours' job = map minutesToHours' $ listOfBillableMinutes' job
+                                where minutesToHours' minutes = ceiling (minutes / 60)
+                                      listOfBillableMinutes' job = filter (>=10) $ listOfMinutes job
+                                          where listOfMinutes' job = map snd (snd job)
+    
+              
+    
+-- exsiqution 3: let
+    printedInvoice'' job = let listOfMinutes'' job = map snd (snd job)
+                           in let listOfBillableMinutes'' job = filter (>=10) $ listOfMinutes'' job
+                                  minutesToHours'' minutes = ceiling (minutes / 60)
+                                  in let listOfHours'' job = map minutesToHours'' $ listOfBillableMinutes'' job
+                                         in let sumOfHours'' job = foldl (+) 0 $ listOfHours'' job
+                                                in let invoiceAmount'' job = sumOfHours'' job * 40
+                                                       companyName'' job = fst job 
+                                                    in "The charge to " ++ companyName'' job ++ " is $" ++ show (invoiceAmount'' job)  
+
+
+    main = do
+        print $ printedInvoice job1
+        print $ printedInvoice' job1
+        print $ printedInvoice'' job1

@@ -1,0 +1,37 @@
+type Title = String
+type Author = String
+type Authors = [Author]
+type Price = Double
+type NumberSold = Int 
+ 
+data Book = Book {title :: Title, 
+                  authors :: Authors, 
+                  price :: Price, 
+                  numSold :: NumberSold} deriving (Show)
+ 
+algOfProgramming = 
+    Book "Algebra of Programming" ["Richard Bird", "Oege de Moor"] 10.00 250
+javaForDummies = 
+    Book "Java For Dummies" ["Barry Burd"] 20.00 200
+hundredYears = 
+    Book "100 Years of Solitude" ["Gabriel García Márquez"] 15.00 1000
+designPatterns = 
+    Book "Design Patterns" ["Gamma", "Helm", "Johnson", "Vlissides"] 60.00 100
+forgottenRoom = 
+    Book "The Forgotten Room" ["White", "Williams", "Willig"] 15.00 150
+
+totalAuthorEarnings (Book _ a p n) = 0.1 * p * fromIntegral n
+ 
+authorEarnings (Book _ a p n)  = (0.1 * p * fromIntegral n) / fromIntegral (length a) 
+
+numAuthors (Book _ a _ _) = fromIntegral (length a)
+
+averageAuthorEarnings list = foldl (+) 0 (map totalAuthorEarnings list) / foldl (+) 0 (map numAuthors list)
+
+main = do
+    print $ numAuthors designPatterns
+    print $ totalAuthorEarnings javaForDummies
+    print $ totalAuthorEarnings designPatterns
+    print $ authorEarnings javaForDummies
+    print $ authorEarnings designPatterns
+    print $ averageAuthorEarnings [javaForDummies, designPatterns]
